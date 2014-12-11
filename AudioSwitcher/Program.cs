@@ -18,6 +18,9 @@ namespace AudioSwitcher
 
         private NotifyIcon trayIcon;
         private ContextMenu trayMenu;
+        private int deviceCount;
+        private int currentDeviceId;
+        
 
         public SysTrayApp()
         {
@@ -33,9 +36,40 @@ namespace AudioSwitcher
             trayIcon.ContextMenu = trayMenu;
             trayIcon.Visible = true;
 
+            // Count sound-devices
+            foreach (var tuple in GetDevices())
+            {
+                deviceCount += 1;
+            }
+
             // Populate device list when menu is opened
             trayIcon.ContextMenu.Popup += PopulateDeviceList;
+
+            // Register MEH on trayicon leftclick
+            trayIcon.MouseUp += new MouseEventHandler(TrayIcon_LeftClick);
         }
+
+        // Selects next device in list when trayicon is left-clicked
+        private void TrayIcon_LeftClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                SelectDevice(nextId());
+            }
+        }
+
+        //Gets the ID of the next sound device in the list
+        private int nextId()
+        {
+            if (currentDeviceId == deviceCount){
+                currentDeviceId = 1;
+            } else {
+                currentDeviceId += 1;
+            }
+            return currentDeviceId;
+        }
+
+        
 
         #region Tray events
 
