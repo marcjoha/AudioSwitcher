@@ -9,3 +9,8 @@ The utility is essentially a wrapper around https://github.com/DanStevens/AudioE
 
 ![AudioSwitcher](https://raw.githubusercontent.com/marcjoha/AudioSwitcher/screenshots/audioswitcher.png "AudioSwitcher")
 
+How To Use
+=
+1. Right-click on tray icon to setup.
+2. Choose output audio devices which you wanted to switch between.
+3. When you want to change output audio device just make mouse left-click on icon in tray.
