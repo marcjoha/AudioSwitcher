@@ -1,9 +1,11 @@
-﻿using AudioSwitcher.Properties;
+using AudioSwitcher.Properties;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
+using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 
 namespace AudioSwitcher
@@ -20,10 +22,12 @@ namespace AudioSwitcher
         private ContextMenu trayMenu;
         private int deviceCount;
         private int currentDeviceId;
-        
+        private static List<int> qDevices;
+
 
         public SysTrayApp()
         {
+            qDevices = Settings.Default.ChoosedDevices ?? new List<int>();
             // Create a simple tray menu
             trayMenu = new ContextMenu();
 
@@ -54,22 +58,30 @@ namespace AudioSwitcher
         {
             if (e.Button == MouseButtons.Left)
             {
-                SelectDevice(nextId());
+                var cur_id = nextId();
+                SelectDevice(cur_id);
+                foreach (var tuple in GetDevices().Where(tuple => cur_id == tuple.Item1))
+                {
+                    trayIcon.Text = "Playing: " + tuple.Item2;
+                    break;
+                }
             }
+        }
+
+
+        public static T NextOf<T>(IList<T> list, T item)
+        {
+            return list[(list.IndexOf(item) + 1) == list.Count ? 0 : (list.IndexOf(item) + 1)];
         }
 
         //Gets the ID of the next sound device in the list
         private int nextId()
         {
-            if (currentDeviceId == deviceCount){
-                currentDeviceId = 1;
-            } else {
-                currentDeviceId += 1;
-            }
+            if (qDevices.Count>0) currentDeviceId = NextOf(qDevices, currentDeviceId);
             return currentDeviceId;
         }
 
-        
+
 
         #region Tray events
 
@@ -83,10 +95,10 @@ namespace AudioSwitcher
             {
                 var id = tuple.Item1;
                 var deviceName = tuple.Item2;
-                var isInUse = tuple.Item3;
+                var isInUse = qDevices.Contains(id);
 
-                var item = new MenuItem {Checked = isInUse, Text = deviceName};
-                item.Click += (s, a) => SelectDevice(id);
+                var item = new MenuItem {Checked = isInUse, Text = deviceName + " ("+id+")"};
+                item.Click += (s, a) => AddDeviceToList(id);
 
                 trayMenu.MenuItems.Add(item);
             }
@@ -96,6 +108,12 @@ namespace AudioSwitcher
             exitItem.Click += OnExit;
             trayMenu.MenuItems.Add("-");
             trayMenu.MenuItems.Add(exitItem);
+        }
+
+        private static void AddDeviceToList(int id)
+        {
+            if (qDevices.Contains(id)) qDevices.Remove(id);
+            else qDevices.Add(id);
         }
 
         #endregion
@@ -133,21 +151,22 @@ namespace AudioSwitcher
 
         private static void SelectDevice(int id)
         {
+
             var p = new Process
-                        {
-                            StartInfo =
+            {
+                StartInfo =
                                 {
                                     UseShellExecute = false,
                                     RedirectStandardOutput = true,
                                     CreateNoWindow = true,
                                     FileName = "EndPointController.exe",
+                                    StandardOutputEncoding = Encoding.UTF8,
                                     Arguments = id.ToString(CultureInfo.InvariantCulture)
                                 }
-                        };
+            };
             p.Start();
             p.WaitForExit();
         }
-
         #endregion
 
         #region Main app methods
@@ -162,6 +181,8 @@ namespace AudioSwitcher
 
         private void OnExit(object sender, EventArgs e)
         {
+            Settings.Default.ChoosedDevices = qDevices;
+            Settings.Default.Save();
             Application.Exit();
         }
 
