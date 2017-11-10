@@ -5,5 +5,8 @@
     <Setting Name="ChoosedDevices" Type="System.Collections.Generic.List&lt;System.Int32&gt;" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="EndPointControllerMD5CheckSumExpect" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

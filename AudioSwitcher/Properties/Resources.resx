@@ -117,8 +117,32 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ERROR_CONTROLLER_CHANGED" xml:space="preserve">
+    <value>Error: Something gone wrong. EndPointController.exe was changed since application start.</value>
+  </data>
+  <data name="ERROR_CONTROLLER_NOT_FOUND" xml:space="preserve">
+    <value>Error: EndPointController.exe not found.</value>
+  </data>
+  <data name="ERROR_INCORRECT_HASH" xml:space="preserve">
+    <value>Error: EndPointController.exe not passed hash code verification.</value>
+  </data>
+  <data name="ERROR_NO_MD5" xml:space="preserve">
+    <value>Error: Program doesn't contains MD5 for EndPointController.exe.\nPlease, restart application with argument --update-md5.</value>
+  </data>
+  <data name="LABEL_EXIT" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="MESSAGE_APPLICATION_WILL_BE_CLOSED" xml:space="preserve">
+    <value>Application will be closed.</value>
+  </data>
+  <data name="MESSAGE_MD5_UPDATED" xml:space="preserve">
+    <value>Program updated MD5 for EndPointController.exe.\nYou can now start application.</value>
+  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="speaker" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\speaker.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="STATUS_PLAYING" xml:space="preserve">
+    <value>Playing:</value>
   </data>
 </root>
